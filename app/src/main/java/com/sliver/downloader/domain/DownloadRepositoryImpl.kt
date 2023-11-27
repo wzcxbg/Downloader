@@ -7,8 +7,9 @@ class DownloadRepositoryImpl : DownloadRepository {
     private val executor = Executors.newSingleThreadExecutor()
     private val downloadTasks = HashMap<String, DownloadTask>()
 
-    override fun addNewDownloadTask(url: String): DownloadTask {
+    override fun addNewDownloadTask(url: String, listener: DownloadTask.DownloadListener): DownloadTask {
         val downloadTask = DownloadTask(url, "/sdcard/Download")
+        downloadTask.setDownloadListener(listener)
         downloadTasks[url] = downloadTask
         executor.execute(downloadTask)
         return downloadTask

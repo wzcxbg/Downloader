@@ -1,13 +1,14 @@
 package com.sliver.downloader.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.sliver.downloader.databinding.ItemDownloadTaskDetailBinding
+import com.sliver.downloader.databinding.ItemTaskDetailBinding
 import com.sliver.downloader.ui.MainViewModel
 
 class DownloadDetailsAdapter : RecyclerView.Adapter<DownloadDetailsAdapter.ViewHolder>() {
-    class ViewHolder(val binding: ItemDownloadTaskDetailBinding) : RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(val binding: ItemTaskDetailBinding) : RecyclerView.ViewHolder(binding.root)
 
     private val downloadTaskDetails = ArrayList<MainViewModel.TaskDetail>()
 
@@ -23,7 +24,7 @@ class DownloadDetailsAdapter : RecyclerView.Adapter<DownloadDetailsAdapter.ViewH
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            ItemDownloadTaskDetailBinding
+            ItemTaskDetailBinding
                 .inflate(
                     LayoutInflater.from(parent.context),
                     parent, false
@@ -34,8 +35,13 @@ class DownloadDetailsAdapter : RecyclerView.Adapter<DownloadDetailsAdapter.ViewH
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val detail = downloadTaskDetails[holder.adapterPosition]
         val binding = holder.binding
-        binding.title.text = detail.taskId
-        binding.progress.progress = detail.progress
+        val progress = when (detail.progressTotal == 0L) {
+            true -> 0
+            false -> (detail.progress * 100 / detail.progressTotal).toInt()
+        }
+        binding.title.text = detail.fileName
+        binding.progress.progress = progress
+        binding.state.text = detail.state.toString()
     }
 
     override fun getItemCount(): Int {
